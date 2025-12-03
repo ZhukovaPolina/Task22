@@ -1,15 +1,10 @@
 ﻿#include "Client.h"
 #include "Case.h"
 
-Client::Client(const std::string& clientName, const std::string& clientContact)
-    : name(clientName), contactInfo(clientContact) {}
+Client::Client(const std::string& clientName) : name(clientName) {}
 
 std::string Client::getName() const {
     return name;
-}
-
-std::string Client::getContactInfo() const {
-    return contactInfo;
 }
 
 void Client::addCase(Case* casePtr) {
@@ -22,4 +17,8 @@ std::vector<std::string> Client::getServiceTypes() const {
         services.push_back(casePtr->getServiceType());
     }
     return services;
+}
+
+int Client::getCaseCount() const {
+    return cases.size();
 }

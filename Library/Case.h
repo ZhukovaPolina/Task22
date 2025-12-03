@@ -2,6 +2,7 @@
 #include <string>
 #include "Lawyer.h"
 #include "Client.h"
+#include "LegalService.h"
 
 class Case {
 private:
@@ -9,15 +10,19 @@ private:
     std::string content;
     Lawyer* lawyer;
     Client* client;
-    std::string serviceType;
+    LegalService* service;
 
 public:
-    Case(int caseId, const std::string& caseContent, Lawyer* caseLawyer, Client* caseClient, const std::string& service);
+    Case(int caseId, const std::string& caseContent, Lawyer* caseLawyer,
+        Client* caseClient, LegalService* caseService);
 
     int getId() const;
     std::string getContent() const;
     Lawyer* getLawyer() const;
     Client* getClient() const;
+    LegalService* getService() const;
     std::string getServiceType() const;
+    std::string getServiceCategory() const;
+
     void setContent(const std::string& newContent);
 };

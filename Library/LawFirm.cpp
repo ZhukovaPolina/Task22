@@ -26,7 +26,39 @@ std::vector<LegalService*> LawFirm::getServices() const {
     return result;
 }
 
-std::vector<Client*> LawFirm::getClientsByService(const std::string& serviceType) const {
+std::vector<Lawyer*> LawFirm::getLawyers() const {
+    std::vector<Lawyer*> result;
+    for (const auto& lawyer : lawyers) {
+        result.push_back(lawyer.get());
+    }
+    return result;
+}
+
+std::vector<Client*> LawFirm::getClients() const {
+    std::vector<Client*> result;
+    for (const auto& client : clients) {
+        result.push_back(client.get());
+    }
+    return result;
+}
+
+std::vector<Case*> LawFirm::getCases() const {
+    std::vector<Case*> result;
+    for (const auto& casePtr : cases) {
+        result.push_back(casePtr.get());
+    }
+    return result;
+}
+
+std::vector<std::pair<std::string, double>> LawFirm::getServicesWithPrices() const {
+    std::vector<std::pair<std::string, double>> result;
+    for (const auto& service : services) {
+        result.emplace_back(service->getName(), service->getPrice());
+    }
+    return result;
+}
+
+std::vector<Client*> LawFirm::getClientsByServiceType(const std::string& serviceType) const {
     std::vector<Client*> result;
     for (const auto& client : clients) {
         auto services = client->getServiceTypes();
@@ -56,5 +88,5 @@ std::string LawFirm::getCaseContent(int caseId) const {
             return casePtr->getContent();
         }
     }
-    return "Case not found";
+    return "Дело не найдено";
 }

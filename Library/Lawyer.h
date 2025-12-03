@@ -7,7 +7,7 @@ class Case;
 class Lawyer {
 private:
     std::string name;
-    std::string specialization;
+    std::string specialization; 
     std::vector<Case*> assignedCases;
     bool isAvailable;
 
@@ -17,6 +17,7 @@ public:
     std::string getName() const;
     std::string getSpecialization() const;
     bool getIsAvailable() const;
+
     void assignCase(Case* casePtr);
     void removeCase(Case* casePtr);
     void setAvailability(bool available);

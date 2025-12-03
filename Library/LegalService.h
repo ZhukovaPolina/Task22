@@ -1,17 +1,24 @@
-#pragma once
+﻿#pragma once
 #include <string>
 
 class LegalService {
-private:
+protected:
     std::string name;
-    std::string description;
     double price;
+    std::string category;  // гражданские, уголовные, семейные
 
 public:
-    LegalService(const std::string& serviceName, const std::string& serviceDesc, double servicePrice);
+    LegalService(const std::string& serviceName, double servicePrice,
+        const std::string& serviceCategory);
+    virtual ~LegalService() = default;
 
+    
+    virtual std::string getServiceType() const = 0;
+
+    
     std::string getName() const;
-    std::string getDescription() const;
     double getPrice() const;
+    std::string getCategory() const;
+
     void setPrice(double newPrice);
 };

@@ -129,6 +129,8 @@
   <ItemGroup>
     <ClCompile Include="Case.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="Consultation.cpp" />
+    <ClCompile Include="CourtCase.cpp" />
     <ClCompile Include="LawFirm.cpp" />
     <ClCompile Include="Lawyer.cpp" />
     <ClCompile Include="LegalService.cpp" />
@@ -136,6 +138,8 @@
   <ItemGroup>
     <ClInclude Include="Case.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Consultation.h" />
+    <ClInclude Include="CourtCase.h" />
     <ClInclude Include="LawFirm.h" />
     <ClInclude Include="Lawyer.h" />
     <ClInclude Include="LegalService.h" />

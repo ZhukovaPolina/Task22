@@ -1,20 +1,30 @@
 ﻿#include "Client.h"
 #include "Case.h"
+#include <string>
 
-Client::Client(const std::string& clientName) : name(clientName) {}
+Client::Client(const std::string& name, const std::string& contact)
+    : Person(name), contactInfo(contact) {}
 
-std::string Client::getName() const {
-    return name;
+std::string Client::getInfo() const {
+    return "Клиент " + getFullName() + ", контакты: " + contactInfo;
 }
 
-void Client::addCase(Case* casePtr) {
-    cases.push_back(casePtr);
+std::string Client::getRole() const {
+    return "Клиент";
+}
+
+std::string Client::getContactInfo() const {
+    return contactInfo;
+}
+
+void Client::setContactInfo(const std::string& contact) {
+    contactInfo = contact;
 }
 
 std::vector<std::string> Client::getServiceTypes() const {
     std::vector<std::string> services;
     for (const auto& casePtr : cases) {
-        services.push_back(casePtr->getServiceType());
+        services.push_back(casePtr->getServiceCategory());
     }
     return services;
 }

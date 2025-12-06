@@ -19,3 +19,7 @@ std::string LegalService::getCategory() const {
 void LegalService::setPrice(double newPrice) {
     price = newPrice;
 }
+
+void LegalService::setCategory(const std::string& newCategory) {
+    category = newCategory;
+}

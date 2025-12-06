@@ -1,11 +1,17 @@
 ﻿#include "Lawyer.h"
 #include "Case.h"
+#include <string>
 
-Lawyer::Lawyer(const std::string& lawyerName, const std::string& lawyerSpecialization)
-    : name(lawyerName), specialization(lawyerSpecialization), isAvailable(true) {}
+Lawyer::Lawyer(const std::string& name, const std::string& specialization, double rate)
+    : Person(name), specialization(specialization), isAvailable(true), hourlyRate(rate) {}
 
-std::string Lawyer::getName() const {
-    return name;
+std::string Lawyer::getInfo() const {
+    return "Адвокат " + getFullName() + ", специализация: " + specialization +
+        ", ставка: " + std::to_string(hourlyRate) + " руб/час";
+}
+
+std::string Lawyer::getRole() const {
+    return "Адвокат";
 }
 
 std::string Lawyer::getSpecialization() const {
@@ -16,25 +22,31 @@ bool Lawyer::getIsAvailable() const {
     return isAvailable;
 }
 
+double Lawyer::getHourlyRate() const {
+    return hourlyRate;
+}
+
+int Lawyer::getCaseCount() const {
+    return cases.size();
+}
+
 void Lawyer::assignCase(Case* casePtr) {
-    assignedCases.push_back(casePtr);
+    cases.push_back(casePtr);
     isAvailable = false;
 }
 
 void Lawyer::removeCase(Case* casePtr) {
-    for (auto it = assignedCases.begin(); it != assignedCases.end(); ++it) {
-        if (*it == casePtr) {
-            assignedCases.erase(it);
-            break;
-        }
+    auto it = std::find(cases.begin(), cases.end(), casePtr);
+    if (it != cases.end()) {
+        cases.erase(it);
     }
-    isAvailable = assignedCases.empty();
+    isAvailable = cases.empty();
 }
 
 void Lawyer::setAvailability(bool available) {
     isAvailable = available;
 }
 
-int Lawyer::getCaseCount() const {
-    return assignedCases.size();
+void Lawyer::setHourlyRate(double rate) {
+    hourlyRate = rate;
 }

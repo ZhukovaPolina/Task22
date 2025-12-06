@@ -1,9 +1,9 @@
-#pragma once
+#ifndef LAWFIRM_H
+#define LAWFIRM_H
+
 #include <vector>
 #include <memory>
 #include "LegalService.h"
-#include "Consultation.h"
-#include "CourtCase.h"
 #include "Lawyer.h"
 #include "Client.h"
 #include "Case.h"
@@ -33,4 +33,9 @@ public:
     std::vector<Client*> getClientsByServiceType(const std::string& serviceType) const;
     std::vector<Lawyer*> getAvailableLawyersByService(const std::string& serviceType) const;
     std::string getCaseContent(int caseId) const;
+
+    
+    std::vector<Person*> getAllPeople() const;
 };
+
+#endif

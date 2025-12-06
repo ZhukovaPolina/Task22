@@ -13,7 +13,7 @@ TEST(LegalServiceTest, CreationAndGetters) {
     EXPECT_EQ(service.getPrice(), 10000.0);
     EXPECT_EQ(service.getCategory(), "Гражданские");
 }
-
+ 
 TEST(LegalServiceTest, PriceModification) {
     LegalService service("Услуга", 5000.0, "Категория");
 

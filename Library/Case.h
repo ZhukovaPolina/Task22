@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CASE_H
+#define CASE_H
+
 #include <string>
 #include "Lawyer.h"
 #include "Client.h"
@@ -21,8 +23,10 @@ public:
     Lawyer* getLawyer() const;
     Client* getClient() const;
     LegalService* getService() const;
-    std::string getServiceType() const;
     std::string getServiceCategory() const;
 
     void setContent(const std::string& newContent);
+    void setLawyer(Lawyer* newLawyer);
 };
+
+#endif

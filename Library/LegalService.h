@@ -1,8 +1,10 @@
-﻿#pragma once
+﻿#ifndef LEGALSERVICE_H
+#define LEGALSERVICE_H
+
 #include <string>
 
 class LegalService {
-protected:
+private:
     std::string name;
     double price;
     std::string category;  // гражданские, уголовные, семейные
@@ -10,15 +12,13 @@ protected:
 public:
     LegalService(const std::string& serviceName, double servicePrice,
         const std::string& serviceCategory);
-    virtual ~LegalService() = default;
 
-    
-    virtual std::string getServiceType() const = 0;
-
-    
     std::string getName() const;
     double getPrice() const;
     std::string getCategory() const;
 
     void setPrice(double newPrice);
+    void setCategory(const std::string& newCategory);
 };
+
+#endif

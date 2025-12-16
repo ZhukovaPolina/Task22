@@ -1,51 +1,93 @@
 #include "Lawyer.h"
 #include "Case.h"
-#include <string>
+#include <algorithm>
 #include <sstream>
-#include <iomanip>
+#include <iostream>
 
-Lawyer::Lawyer(const std::string& name, const std::string& specialization, double rate)
-    : Person(name), specialization(specialization), isAvailable(true), hourlyRate(rate) {}
+Lawyer::Lawyer(const std::string& name, int age, const std::string& spec,
+               double rate, bool available)
+    : Person(name, age), specialization(spec), 
+      hourlyRate(rate), isAvailable(available) {}
 
-std::string Lawyer::getInfo() const {
-    std::ostringstream oss;
-    oss << "Адвокат " << getFullName() 
-        << ", специализация: " << specialization 
-        << ", ставка: " << std::fixed << std::setprecision(2) << hourlyRate << " руб/час"
-        << ", дел: " << getCaseCount();
-    return oss.str();
+std::string Lawyer::getSpecialization() const { return specialization; }
+bool Lawyer::getAvailability() const { return isAvailable; }
+double Lawyer::getHourlyRate() const { return hourlyRate; }
+
+const std::vector<Case*>& Lawyer::getCases() const { return cases; }
+
+void Lawyer::setSpecialization(const std::string& spec) { specialization = spec; }
+void Lawyer::setAvailability(bool available) { isAvailable = available; }
+void Lawyer::setHourlyRate(double rate) { hourlyRate = rate; }
+
+void Lawyer::addCase(Case* newCase) {
+    if (newCase && std::find(cases.begin(), cases.end(), newCase) == cases.end()) {
+        cases.push_back(newCase);
+        newCase->setLawyer(this);
+        
+        if (isAvailable && !cases.empty()) {
+            isAvailable = false;
+        }
+        
+        std::cout << "Case " << newCase->getCaseId() 
+                  << " added to lawyer " << getName() << std::endl;
+    }
 }
 
-std::string Lawyer::getRole() const {
-    return "Адвокат";
+void Lawyer::removeCase(Case* caseToRemove) {
+    if (!caseToRemove) return;
+    
+    auto it = std::find(cases.begin(), cases.end(), caseToRemove);
+    if (it != cases.end()) {
+        cases.erase(it);
+        caseToRemove->setLawyer(nullptr);
+        
+        std::cout << "Case " << caseToRemove->getCaseId() 
+                  << " removed from lawyer " << getName() << std::endl;
+    }
+    
+    if (cases.empty()) {
+        isAvailable = true;
+    }
 }
 
-std::string Lawyer::getSpecialization() const {
-    return specialization;
+bool Lawyer::hasCase(const std::string& caseId) const {
+    for (const auto& casePtr : cases) {
+        if (casePtr && casePtr->getCaseId() == caseId) {
+            return true;
+        }
+    }
+    return false;
 }
 
-bool Lawyer::getIsAvailable() const {
-    return isAvailable;
+int Lawyer::getCasesCount() const {
+    return cases.size();
 }
 
-double Lawyer::getHourlyRate() const {
-    return hourlyRate;
+double Lawyer::calculateEstimatedCost(double hours) const {
+    return hourlyRate * hours;
 }
 
-void Lawyer::assignCase(Case* casePtr) {
-    addCase(casePtr);
-    isAvailable = false;
+void Lawyer::toggleAvailability() {
+    isAvailable = !isAvailable;
 }
 
-void Lawyer::completeCase(Case* casePtr) {
-    removeCase(casePtr);
-    isAvailable = getCaseCount() == 0;
-}
-
-void Lawyer::setAvailability(bool available) {
-    isAvailable = available;
-}
-
-void Lawyer::setHourlyRate(double rate) {
-    hourlyRate = rate;
+std::string Lawyer::toString() const {
+    std::stringstream ss;
+    ss << Person::toString() << "\n"
+       << "Specialization: " << specialization << "\n"
+       << "Hourly Rate: $" << hourlyRate << "\n"
+       << "Available: " << (isAvailable ? "Yes" : "No") << "\n"
+       << "Active Cases: " << getCasesCount();
+    
+    if (!cases.empty()) {
+        ss << "\nCases:";
+        for (const auto& casePtr : cases) {
+            if (casePtr) {
+                ss << "\n  - " << casePtr->getCaseId() 
+                   << " (" << casePtr->getStatus() << ")";
+            }
+        }
+    }
+    
+    return ss.str();
 }

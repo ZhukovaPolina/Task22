@@ -1,36 +1,69 @@
 #include "Client.h"
 #include "Case.h"
-#include <string>
 #include <algorithm>
+#include <sstream>
+#include <iostream>
 
-Client::Client(const std::string& name, const std::string& contact)
-    : Person(name), contactInfo(contact) {}
+Client::Client(const std::string& name, int age, const std::string& contact)
+    : Person(name, age), contactInfo(contact) {}
 
-std::string Client::getInfo() const {
-    return "Клиент " + getFullName() + ", контакты: " + contactInfo + 
-           ", дел: " + std::to_string(getCaseCount());
+std::string Client::getContactInfo() const { return contactInfo; }
+
+const std::vector<Case*>& Client::getCases() const { return cases; }
+
+void Client::setContactInfo(const std::string& contact) { contactInfo = contact; }
+
+void Client::addCase(Case* newCase) {
+    if (newCase && std::find(cases.begin(), cases.end(), newCase) == cases.end()) {
+        cases.push_back(newCase);
+        newCase->setClient(this);
+        
+        std::cout << "Case " << newCase->getCaseId() 
+                  << " added to client " << getName() << std::endl;
+    }
 }
 
-std::string Client::getRole() const {
-    return "Клиент";
+void Client::removeCase(Case* caseToRemove) {
+    if (!caseToRemove) return;
+    
+    auto it = std::find(cases.begin(), cases.end(), caseToRemove);
+    if (it != cases.end()) {
+        cases.erase(it);
+        caseToRemove->setClient(nullptr);
+        
+        std::cout << "Case " << caseToRemove->getCaseId() 
+                  << " removed from client " << getName() << std::endl;
+    }
 }
 
-std::string Client::getContactInfo() const {
-    return contactInfo;
-}
-
-void Client::setContactInfo(const std::string& contact) {
-    contactInfo = contact;
-}
-
-std::vector<std::string> Client::getServiceTypes() const {
-    std::vector<std::string> services;
-    for (Case* casePtr : getCases()) {
-        if (casePtr) {
-            services.push_back(casePtr->getServiceCategory());
+bool Client::hasCase(const std::string& caseId) const {
+    for (const auto& casePtr : cases) {
+        if (casePtr && casePtr->getCaseId() == caseId) {
+            return true;
         }
     }
-    std::sort(services.begin(), services.end());
-    services.erase(std::unique(services.begin(), services.end()), services.end());
-    return services;
+    return false;
+}
+
+int Client::getCasesCount() const {
+    return cases.size();
+}
+
+std::string Client::toString() const {
+    std::stringstream ss;
+    ss << Person::toString() << "\n"
+       << "Contact: " << contactInfo << "\n"
+       << "Cases: " << getCasesCount();
+    
+    if (!cases.empty()) {
+        ss << "\nActive Cases:";
+        for (const auto& casePtr : cases) {
+            if (casePtr) {
+                ss << "\n  - " << casePtr->getCaseId() 
+                   << " (" << casePtr->getStatus() << ")";
+            }
+        }
+    }
+    
+    return ss.str();
 }

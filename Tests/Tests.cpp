@@ -1,191 +1,158 @@
-﻿#include <gtest/gtest.h>
-#include "../LawFirmLibrary/LawFirm.h"
-#include "../LawFirmLibrary/LegalService.h"
-#include "../LawFirmLibrary/Lawyer.h"
-#include "../LawFirmLibrary/Client.h"
-#include "../LawFirmLibrary/Case.h"
+#include <gtest/gtest.h>
+#include "../Library/Person.h"
+#include "../Library/Lawyer.h"
+#include "../Library/Client.h"
+#include "../Library/LegalService.h"
+#include "../Library/Case.h"
+#include "../Library/LawFirm.h"
 
-
-TEST(LegalServiceTest, CreationAndGetters) {
-    LegalService service("Услуга 1", 10000.0, "Гражданские");
-
-    EXPECT_EQ(service.getName(), "Услуга 1");
-    EXPECT_EQ(service.getPrice(), 10000.0);
-    EXPECT_EQ(service.getCategory(), "Гражданские");
-}
- 
-TEST(LegalServiceTest, PriceModification) {
-    LegalService service("Услуга", 5000.0, "Категория");
-
-    service.setPrice(7500.0);
-    EXPECT_EQ(service.getPrice(), 7500.0);
+TEST(PersonTest, CreationAndGetters) {
+    Lawyer lawyer("Адвокат", "Гражданские", 3000.0);
+    EXPECT_EQ(lawyer.getFullName(), "Адвокат");
+    
+    Client client("Клиент", "контакт");
+    EXPECT_EQ(client.getFullName(), "Клиент");
 }
 
-TEST(LegalServiceTest, CategoryModification) {
-    LegalService service("Услуга", 5000.0, "Старая категория");
-
-    service.setCategory("Новая категория");
-    EXPECT_EQ(service.getCategory(), "Новая категория");
-}
-
-
-TEST(LawyerTest, CreationAndAvailability) {
-    Lawyer lawyer("Адвокат", "Специализация");
-
-    EXPECT_EQ(lawyer.getName(), "Адвокат");
-    EXPECT_EQ(lawyer.getSpecialization(), "Специализация");
+TEST(LawyerTest, Creation) {
+    Lawyer lawyer("Адвокат", "Гражданские", 3000.0);
+    
+    EXPECT_EQ(lawyer.getFullName(), "Адвокат");
+    EXPECT_EQ(lawyer.getSpecialization(), "Гражданские");
+    EXPECT_EQ(lawyer.getHourlyRate(), 3000.0);
     EXPECT_TRUE(lawyer.getIsAvailable());
     EXPECT_EQ(lawyer.getCaseCount(), 0);
+    EXPECT_EQ(lawyer.getRole(), "Адвокат");
+}
+
+TEST(LawyerTest, GetInfo) {
+    Lawyer lawyer("Иванов И.И.", "Уголовные", 5000.0);
+    
+    std::string expectedInfo = "Адвокат Иванов И.И., специализация: Уголовные, ставка: 5000.00 руб/час, дел: 0";
+    EXPECT_EQ(lawyer.getInfo(), expectedInfo);
 }
 
 TEST(LawyerTest, CaseAssignment) {
-    Lawyer lawyer("Адвокат", "Специализация");
+    Lawyer lawyer("Адвокат", "Гражданские", 3000.0);
     Client client("Клиент");
-    LegalService service("Услуга", 10000.0, "Категория");
-    Case caseObj(1, "Содержание", &lawyer, &client, &service);
-
+    LegalService service("Консультация", 5000.0, "Гражданские");
+    Case caseObj(1, "Дело", &lawyer, &client, &service);
     
     EXPECT_FALSE(lawyer.getIsAvailable());
     EXPECT_EQ(lawyer.getCaseCount(), 1);
+    
+    EXPECT_TRUE(lawyer.involvedInCaseType("Гражданские"));
+    EXPECT_TRUE(lawyer.involvedInCase("Гражданские", 1));
 }
-
-TEST(LawyerTest, AvailabilityChange) {
-    Lawyer lawyer("Адвокат", "Специализация");
-
-    lawyer.setAvailability(false);
-    EXPECT_FALSE(lawyer.getIsAvailable());
-
-    lawyer.setAvailability(true);
-    EXPECT_TRUE(lawyer.getIsAvailable());
-}
-
 
 TEST(ClientTest, Creation) {
-    Client client("Клиент");
-
-    EXPECT_EQ(client.getName(), "Клиент");
+    Client client("Клиент", "тел: 111-11-11");
+    
+    EXPECT_EQ(client.getFullName(), "Клиент");
+    EXPECT_EQ(client.getContactInfo(), "тел: 111-11-11");
     EXPECT_EQ(client.getCaseCount(), 0);
+    EXPECT_EQ(client.getRole(), "Клиент");
+}
+
+TEST(ClientTest, GetInfo) {
+    Client client("Петров П.П.", "email@example.com");
+    
+    std::string expectedInfo = "Клиент Петров П.П., контакты: email@example.com, дел: 0";
+    EXPECT_EQ(client.getInfo(), expectedInfo);
 }
 
 TEST(ClientTest, AddCase) {
     Client client("Клиент");
-    Lawyer lawyer("Адвокат", "Специализация");
-    LegalService service("Услуга", 10000.0, "Категория");
-    Case caseObj(1, "Содержание", &lawyer, &client, &service);
-
+    Lawyer lawyer("Адвокат", "Гражданские", 3000.0);
+    LegalService service("Консультация", 5000.0, "Гражданские");
+    Case caseObj(1, "Дело", &lawyer, &client, &service);
+    
     EXPECT_EQ(client.getCaseCount(), 1);
-
+    
     auto serviceTypes = client.getServiceTypes();
     EXPECT_EQ(serviceTypes.size(), 1);
-    EXPECT_EQ(serviceTypes[0], "Категория");
+    EXPECT_EQ(serviceTypes[0], "Гражданские");
+    
+    EXPECT_TRUE(client.involvedInCaseType("Гражданские"));
+    EXPECT_TRUE(client.involvedInCase("Гражданские", 1));
 }
 
-TEST(ClientTest, MultipleCases) {
-    Client client("Клиент");
-    Lawyer lawyer1("Адвокат 1", "Специализация 1");
-    Lawyer lawyer2("Адвокат 2", "Специализация 2");
-    LegalService service1("Услуга 1", 10000.0, "Категория 1");
-    LegalService service2("Услуга 2", 20000.0, "Категория 2");
-
-    Case case1(1, "Дело 1", &lawyer1, &client, &service1);
-    Case case2(2, "Дело 2", &lawyer2, &client, &service2);
-
-    EXPECT_EQ(client.getCaseCount(), 2);
-
-    auto serviceTypes = client.getServiceTypes();
-    EXPECT_EQ(serviceTypes.size(), 2);
-    EXPECT_EQ(serviceTypes[0], "Категория 1");
-    EXPECT_EQ(serviceTypes[1], "Категория 2");
+TEST(LegalServiceTest, Creation) {
+    LegalService service("Консультация", 5000.0, "Гражданские");
+    
+    EXPECT_EQ(service.getName(), "Консультация");
+    EXPECT_EQ(service.getPrice(), 5000.0);
+    EXPECT_EQ(service.getCategory(), "Гражданские");
 }
 
+TEST(LegalServiceTest, Modifiers) {
+    LegalService service("Услуга", 1000.0, "Категория");
+    
+    service.setPrice(2000.0);
+    EXPECT_EQ(service.getPrice(), 2000.0);
+    
+    service.setCategory("Новая категория");
+    EXPECT_EQ(service.getCategory(), "Новая категория");
+}
 
-TEST(CaseTest, CreationAndGetters) {
-    Lawyer lawyer("Адвокат", "Специализация");
+TEST(CaseTest, Creation) {
+    Lawyer lawyer("Адвокат", "Гражданские", 3000.0);
     Client client("Клиент");
-    LegalService service("Услуга", 10000.0, "Категория");
+    LegalService service("Консультация", 5000.0, "Гражданские");
     Case caseObj(123, "Содержание дела", &lawyer, &client, &service);
-
+    
     EXPECT_EQ(caseObj.getId(), 123);
     EXPECT_EQ(caseObj.getContent(), "Содержание дела");
-    EXPECT_EQ(caseObj.getServiceType(), "Категория");
+    EXPECT_EQ(caseObj.getServiceCategory(), "Гражданские");
     EXPECT_EQ(caseObj.getLawyer(), &lawyer);
     EXPECT_EQ(caseObj.getClient(), &client);
     EXPECT_EQ(caseObj.getService(), &service);
 }
 
 TEST(CaseTest, ContentModification) {
-    Lawyer lawyer("Адвокат", "Специализация");
+    Lawyer lawyer("Адвокат", "Гражданские", 3000.0);
     Client client("Клиент");
-    LegalService service("Услуга", 10000.0, "Категория");
-    Case caseObj(1, "Исходное содержание", &lawyer, &client, &service);
-
+    LegalService service("Услуга", 5000.0, "Категория");
+    Case caseObj(1, "Старое содержание", &lawyer, &client, &service);
+    
     caseObj.setContent("Новое содержание");
     EXPECT_EQ(caseObj.getContent(), "Новое содержание");
 }
 
-
-TEST(LawFirmTest, ServiceManagement) {
+TEST(LawFirmTest, AddAndGetObjects) {
     LawFirm firm;
-
-    firm.addService(std::make_unique<LegalService>("Услуга 1", 10000.0, "Категория 1"));
-    firm.addService(std::make_unique<LegalService>("Услуга 2", 20000.0, "Категория 2"));
-
+    
+    firm.addService(std::make_unique<LegalService>("Консультация", 5000.0, "Гражданские"));
+    firm.addService(std::make_unique<LegalService>("Защита", 100000.0, "Уголовные"));
+    
     auto services = firm.getServices();
     EXPECT_EQ(services.size(), 2);
-    EXPECT_EQ(services[0]->getName(), "Услуга 1");
-    EXPECT_EQ(services[1]->getName(), "Услуга 2");
-}
-
-TEST(LawFirmTest, LawyerManagement) {
-    LawFirm firm;
-
-    firm.addLawyer(std::make_unique<Lawyer>("Адвокат 1", "Категория 1"));
-    firm.addLawyer(std::make_unique<Lawyer>("Адвокат 2", "Категория 2"));
-
+    EXPECT_EQ(services[0]->getName(), "Консультация");
+    EXPECT_EQ(services[1]->getName(), "Защита");
+    
+    firm.addLawyer(std::make_unique<Lawyer>("Адвокат 1", "Гражданские", 3000.0));
+    firm.addLawyer(std::make_unique<Lawyer>("Адвокат 2", "Уголовные", 5000.0));
+    
     auto lawyers = firm.getLawyers();
     EXPECT_EQ(lawyers.size(), 2);
-    EXPECT_EQ(lawyers[0]->getName(), "Адвокат 1");
-    EXPECT_EQ(lawyers[1]->getName(), "Адвокат 2");
-}
-
-TEST(LawFirmTest, ClientManagement) {
-    LawFirm firm;
-
-    firm.addClient(std::make_unique<Client>("Клиент 1"));
-    firm.addClient(std::make_unique<Client>("Клиент 2"));
-
+    EXPECT_EQ(lawyers[0]->getFullName(), "Адвокат 1");
+    EXPECT_EQ(lawyers[1]->getFullName(), "Адвокат 2");
+    
+    firm.addClient(std::make_unique<Client>("Клиент 1", "контакт1"));
+    firm.addClient(std::make_unique<Client>("Клиент 2", "контакт2"));
+    
     auto clients = firm.getClients();
     EXPECT_EQ(clients.size(), 2);
-    EXPECT_EQ(clients[0]->getName(), "Клиент 1");
-    EXPECT_EQ(clients[1]->getName(), "Клиент 2");
-}
-
-TEST(LawFirmTest, CaseManagement) {
-    LawFirm firm;
-
-    
-    firm.addService(std::make_unique<LegalService>("Услуга", 10000.0, "Категория"));
-    firm.addLawyer(std::make_unique<Lawyer>("Адвокат", "Категория"));
-    firm.addClient(std::make_unique<Client>("Клиент"));
-
-    
-    firm.addCase(std::make_unique<Case>(1, "Содержание дела",
-        firm.getLawyers()[0],
-        firm.getClients()[0],
-        firm.getServices()[0]));
-
-    auto cases = firm.getCases();
-    EXPECT_EQ(cases.size(), 1);
-    EXPECT_EQ(cases[0]->getId(), 1);
-    EXPECT_EQ(cases[0]->getContent(), "Содержание дела");
+    EXPECT_EQ(clients[0]->getFullName(), "Клиент 1");
+    EXPECT_EQ(clients[1]->getFullName(), "Клиент 2");
 }
 
 TEST(LawFirmTest, GetServicesWithPrices) {
     LawFirm firm;
-
+    
     firm.addService(std::make_unique<LegalService>("Услуга 1", 10000.0, "Категория 1"));
     firm.addService(std::make_unique<LegalService>("Услуга 2", 20000.0, "Категория 2"));
-
+    
     auto servicesWithPrices = firm.getServicesWithPrices();
     EXPECT_EQ(servicesWithPrices.size(), 2);
     EXPECT_EQ(servicesWithPrices[0].first, "Услуга 1");
@@ -196,132 +163,42 @@ TEST(LawFirmTest, GetServicesWithPrices) {
 
 TEST(LawFirmTest, GetClientsByServiceType) {
     LawFirm firm;
-
     
-    firm.addService(std::make_unique<LegalService>("Услуга", 10000.0, "Категория"));
-    firm.addLawyer(std::make_unique<Lawyer>("Адвокат", "Категория"));
+    firm.addService(std::make_unique<LegalService>("Консультация", 5000.0, "Гражданские"));
+    firm.addLawyer(std::make_unique<Lawyer>("Адвокат", "Гражданские", 3000.0));
     firm.addClient(std::make_unique<Client>("Клиент 1"));
     firm.addClient(std::make_unique<Client>("Клиент 2"));
-
     
-    firm.addCase(std::make_unique<Case>(1, "Дело",
-        firm.getLawyers()[0],
-        firm.getClients()[0],
+    firm.addCase(std::make_unique<Case>(1, "Дело 1", 
+        firm.getLawyers()[0], 
+        firm.getClients()[0], 
         firm.getServices()[0]));
-
-    auto clientsByService = firm.getClientsByServiceType("Категория");
+    
+    auto clientsByService = firm.getClientsByServiceType("Гражданские");
     EXPECT_EQ(clientsByService.size(), 1);
-    EXPECT_EQ(clientsByService[0]->getName(), "Клиент 1");
-
-    // Проверяем, что второй клиент не найден для этой услуги
-    auto clientsByWrongService = firm.getClientsByServiceType("Другая категория");
+    EXPECT_EQ(clientsByService[0]->getFullName(), "Клиент 1");
+    
+    auto clientsByWrongService = firm.getClientsByServiceType("Уголовные");
     EXPECT_EQ(clientsByWrongService.size(), 0);
 }
 
 TEST(LawFirmTest, GetAvailableLawyersByService) {
     LawFirm firm;
-
-    firm.addLawyer(std::make_unique<Lawyer>("Адвокат 1", "Категория 1"));
-    firm.addLawyer(std::make_unique<Lawyer>("Адвокат 2", "Категория 2"));
-    firm.addLawyer(std::make_unique<Lawyer>("Адвокат 3", "Категория 1"));
-
+    
+    firm.addLawyer(std::make_unique<Lawyer>("Адвокат 1", "Гражданские", 3000.0));
+    firm.addLawyer(std::make_unique<Lawyer>("Адвокат 2", "Уголовные", 5000.0));
+    firm.addLawyer(std::make_unique<Lawyer>("Адвокат 3", "Гражданские", 4000.0));
+    
+    firm.addService(std::make_unique<LegalService>("Консультация", 5000.0, "Гражданские"));
     firm.addClient(std::make_unique<Client>("Клиент"));
-    firm.addService(std::make_unique<LegalService>("Услуга", 10000.0, "Категория 1"));
-    firm.addCase(std::make_unique<Case>(1, "Дело",
-        firm.getLawyers()[0],
-        firm.getClients()[0],
+    firm.addCase(std::make_unique<Case>(1, "Дело", 
+        firm.getLawyers()[0], 
+        firm.getClients()[0], 
         firm.getServices()[0]));
-
-    auto availableLawyers1 = firm.getAvailableLawyersByService("Категория 1");
-   
-    EXPECT_EQ(availableLawyers1.size(), 1);
-    EXPECT_EQ(availableLawyers1[0]->getName(), "Адвокат 3");
-
-    auto availableLawyers2 = firm.getAvailableLawyersByService("Категория 2");
-    EXPECT_EQ(availableLawyers2.size(), 1);
-    EXPECT_EQ(availableLawyers2[0]->getName(), "Адвокат 2");
-
-    auto availableLawyers3 = firm.getAvailableLawyersByService("Несуществующая категория");
-    EXPECT_EQ(availableLawyers3.size(), 0);
-}
-
-TEST(LawFirmTest, GetCaseContent) {
-    LawFirm firm;
-
-    firm.addService(std::make_unique<LegalService>("Услуга", 10000.0, "Категория"));
-    firm.addLawyer(std::make_unique<Lawyer>("Адвокат", "Категория"));
-    firm.addClient(std::make_unique<Client>("Клиент"));
-
-    firm.addCase(std::make_unique<Case>(1, "Содержание дела 1",
-        firm.getLawyers()[0],
-        firm.getClients()[0],
-        firm.getServices()[0]));
-
-    firm.addCase(std::make_unique<Case>(2, "Содержание дела 2",
-        firm.getLawyers()[0],
-        firm.getClients()[0],
-        firm.getServices()[0]));
-
-    EXPECT_EQ(firm.getCaseContent(1), "Содержание дела 1");
-    EXPECT_EQ(firm.getCaseContent(2), "Содержание дела 2");
-    EXPECT_EQ(firm.getCaseContent(999), "Дело не найдено");
-}
-
-TEST(LawFirmTest, ComplexScenario) {
-    LawFirm firm;
-
     
-    firm.addService(std::make_unique<LegalService>("Гражданская консультация", 5000.0, "Гражданские"));
-    firm.addService(std::make_unique<LegalService>("Уголовная защита", 100000.0, "Уголовные"));
-    firm.addService(std::make_unique<LegalService>("Семейная консультация", 4000.0, "Семейные"));
-
+    auto availableLawyers = firm.getAvailableLawyersByService("Гражданские");
+    EXPECT_EQ(availableLawyers.size(), 1);
+    EXPECT_EQ(availableLawyers[0]->getFullName(), "Адвокат 3");
     
-    firm.addLawyer(std::make_unique<Lawyer>("Адвокат 1", "Гражданские"));
-    firm.addLawyer(std::make_unique<Lawyer>("Адвокат 2", "Уголовные"));
-    firm.addLawyer(std::make_unique<Lawyer>("Адвокат 3", "Семейные"));
-    firm.addLawyer(std::make_unique<Lawyer>("Адвокат 4", "Гражданские"));
-
-    
-    firm.addClient(std::make_unique<Client>("Клиент А"));
-    firm.addClient(std::make_unique<Client>("Клиент Б"));
-    firm.addClient(std::make_unique<Client>("Клиент В"));
-
-    
-    auto lawyers = firm.getLawyers();
-    auto clients = firm.getClients();
-    auto services = firm.getServices();
-
-    
-    firm.addCase(std::make_unique<Case>(1, "Дело о договоре",
-        lawyers[0], clients[0], services[0]));
-
-    
-    firm.addCase(std::make_unique<Case>(2, "Уголовное дело",
-        lawyers[1], clients[1], services[1]));
-
-    
-    firm.addCase(std::make_unique<Case>(3, "Семейный спор",
-        lawyers[2], clients[2], services[2]));
-
-    auto servicesWithPrices = firm.getServicesWithPrices();
-    EXPECT_EQ(servicesWithPrices.size(), 3);
-
-    
-    auto civilClients = firm.getClientsByServiceType("Гражданские");
-    EXPECT_EQ(civilClients.size(), 1);
-    EXPECT_EQ(civilClients[0]->getName(), "Клиент А");
-
-    
-    auto availableCivilLawyers = firm.getAvailableLawyersByService("Гражданские");
-    
-    EXPECT_EQ(availableCivilLawyers.size(), 1);
-    EXPECT_EQ(availableCivilLawyers[0]->getName(), "Адвокат 4");
-
-    EXPECT_EQ(firm.getCaseContent(2), "Уголовное дело");
-
-    
-    EXPECT_FALSE(lawyers[0]->getIsAvailable()); 
-    EXPECT_FALSE(lawyers[1]->getIsAvailable()); 
-    EXPECT_FALSE(lawyers[2]->getIsAvailable()); 
-    EXPECT_TRUE(lawyers[3]->getIsAvailable());  
-}
+    auto availableLawyers2 = firm.getAvailableLawyersByService("Уголовные");
+    EXPECT_EQ(

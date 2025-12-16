@@ -3,25 +3,27 @@
 
 #include <string>
 #include <vector>
-#include <memory>
 
-class Case;  
+class Case;
+
 class Person {
 protected:
     std::string fullName;
-    std::vector<Case*> cases;  
-
+    std::vector<Case*> cases;
+    
 public:
     explicit Person(const std::string& name);
     virtual ~Person() = default;
-
+    
     const std::string& getFullName() const;
+    
     void addCase(Case* casePtr);
-
+    void removeCase(Case* casePtr);
+    int getCaseCount() const;
+    const std::vector<Case*>& getCases() const;
     
     virtual std::string getInfo() const = 0;
     virtual std::string getRole() const = 0;
-
     
     bool involvedInCaseType(const std::string& caseType) const;
     bool involvedInCase(const std::string& caseType, int caseId) const;

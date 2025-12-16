@@ -1,87 +1,166 @@
-﻿#include <iostream>
+#include <iostream>
 #include <vector>
 #include <memory>
-#include "../LawFirmLibrary/LawFirm.h"
-#include "../LawFirmLibrary/LegalService.h"
-#include "../LawFirmLibrary/Lawyer.h"
-#include "../LawFirmLibrary/Client.h"
-#include "../LawFirmLibrary/Case.h"
+#include <iomanip>
+#include "../Library/LawFirm.h"
+#include "../Library/LegalService.h"
+#include "../Library/Lawyer.h"
+#include "../Library/Client.h"
+#include "../Library/Case.h"
 
 int main() {
     LawFirm firm;
-
     
-    firm.addService(std::make_unique<LegalService>("Гражданские дела", 50000.0, "Гражданские"));
-    firm.addService(std::make_unique<LegalService>("Уголовные дела", 100000.0, "Уголовные"));
-    firm.addService(std::make_unique<LegalService>("Семейные дела", 40000.0, "Семейные"));
-
+    std::vector<std::unique_ptr<Person>> peopleCollection;
     
-    firm.addLawyer(std::make_unique<Lawyer>("Иванов И.И.", "Гражданские", 3000.0));
-    firm.addLawyer(std::make_unique<Lawyer>("Петров П.П.", "Уголовные", 5000.0));
-    firm.addLawyer(std::make_unique<Lawyer>("Сидорова С.С.", "Семейные", 2500.0));
-
-    firm.addClient(std::make_unique<Client>("Клиент А", "тел: 111-11-11"));
-    firm.addClient(std::make_unique<Client>("Клиент Б", "тел: 222-22-22"));
-    firm.addClient(std::make_unique<Client>("Клиент В", "тел: 333-33-33"));
-
+    peopleCollection.push_back(std::make_unique<Lawyer>("Адвокат 1", "Гражданские", 3000.0));
+    peopleCollection.push_back(std::make_unique<Lawyer>("Адвокат 2", "Уголовные", 5000.0));
+    peopleCollection.push_back(std::make_unique<Lawyer>("Адвокат 3", "Семейные", 2500.0));
+    
+    peopleCollection.push_back(std::make_unique<Client>("Клиент 1", "тел: 111-11-11"));
+    peopleCollection.push_back(std::make_unique<Client>("Клиент 2", "тел: 222-22-22"));
+    peopleCollection.push_back(std::make_unique<Client>("Клиент 3", "тел: 333-33-33"));
+    
+    for (auto& person : peopleCollection) {
+        if (auto lawyer = dynamic_cast<Lawyer*>(person.get())) {
+            firm.addLawyer(std::unique_ptr<Lawyer>(dynamic_cast<Lawyer*>(person.release())));
+        }
+        else if (auto client = dynamic_cast<Client*>(person.get())) {
+            firm.addClient(std::unique_ptr<Client>(dynamic_cast<Client*>(person.release())));
+        }
+    }
+    
+    firm.addService(std::make_unique<LegalService>("Консультация по гражданским делам", 5000.0, "Гражданские"));
+    firm.addService(std::make_unique<LegalService>("Защита по уголовным делам", 100000.0, "Уголовные"));
+    firm.addService(std::make_unique<LegalService>("Консультация по семейным делам", 4000.0, "Семейные"));
+    firm.addService(std::make_unique<LegalService>("Ведение гражданского дела", 50000.0, "Гражданские"));
+    firm.addService(std::make_unique<LegalService>("Ведение уголовного дела", 150000.0, "Уголовные"));
     
     auto lawyers = firm.getLawyers();
     auto clients = firm.getClients();
     auto services = firm.getServices();
-
-    firm.addCase(std::make_unique<Case>(1, "Дело о договоре аренды",
-        lawyers[0], clients[0], services[0]));
-
-    firm.addCase(std::make_unique<Case>(2, "Уголовное дело о краже",
-        lawyers[1], clients[1], services[1]));
-
-
     
-    std::cout << "1. УСЛУГИ И ЦЕНЫ:\n";
-    for (const auto& [name, price] : firm.getServicesWithPrices()) {
-        std::cout << "   " << name << ": " << price << " руб.\n";
+    if (lawyers.size() > 0 && clients.size() > 0 && services.size() > 0) {
+        firm.addCase(std::make_unique<Case>(
+            1, 
+            "Консультация по договору аренды коммерческой недвижимости",
+            lawyers[0], 
+            clients[0], 
+            services[0]
+        ));
     }
-
     
-    std::cout << "\n2. КЛИЕНТЫ ПО 'Гражданские дела':\n";
-    for (const auto& client : firm.getClientsByServiceType("Гражданские")) {
-        std::cout << "   " << client->getFullName() << "\n";
+    if (lawyers.size() > 1 && clients.size() > 1 && services.size() > 1) {
+        firm.addCase(std::make_unique<Case>(
+            2, 
+            "Защита по уголовному делу по статье 158 УК РФ",
+            lawyers[1], 
+            clients[1], 
+            services[1]
+        ));
     }
-
     
-    std::cout << "\n3. СВОБОДНЫЕ АДВОКАТЫ ПО 'Семейные дела':\n";
-    for (const auto& lawyer : firm.getAvailableLawyersByService("Семейные")) {
-        std::cout << "   " << lawyer->getFullName() << "\n";
+    if (lawyers.size() > 2 && clients.size() > 2 && services.size() > 2) {
+        firm.addCase(std::make_unique<Case>(
+            3, 
+            "Консультация по вопросу раздела имущества при разводе",
+            lawyers[2], 
+            clients[2], 
+            services[2]
+        ));
     }
-
+    
+    if (lawyers.size() > 0 && clients.size() > 0 && services.size() > 3) {
+        firm.addCase(std::make_unique<Case>(
+            4, 
+            "Ведение дела о взыскании задолженности",
+            lawyers[0], 
+            clients[0], 
+            services[3]
+        ));
+    }
+    
+    std::cout << "=== АДВОКАТСКАЯ КОНТОРА ===\n" << std::endl;
+    
+    std::cout << "1. СПИСОК УСЛУГ И ЦЕН:\n";
+    auto servicesWithPrices = firm.getServicesWithPrices();
+    for (const auto& [name, price] : servicesWithPrices) {
+        std::cout << "   • " << std::left << std::setw(40) << name 
+                  << ": " << std::right << std::setw(10) << std::fixed << std::setprecision(2) 
+                  << price << " руб.\n";
+    }
+    
+    std::cout << "\n2. КЛИЕНТЫ, ОБРАЩАВШИЕСЯ ЗА УСЛУГОЙ 'Гражданские':\n";
+    auto clientsByService = firm.getClientsByServiceType("Гражданские");
+    if (clientsByService.empty()) {
+        std::cout << "   Нет клиентов\n";
+    } else {
+        for (const auto& client : clientsByService) {
+            std::cout << "   • " << client->getFullName() 
+                      << " (" << client->getContactInfo() << ")\n";
+        }
+    }
+    
+    std::cout << "\n3. СВОБОДНЫЕ АДВОКАТЫ ПО УСЛУГЕ 'Уголовные':\n";
+    auto availableLawyers = firm.getAvailableLawyersByService("Уголовные");
+    if (availableLawyers.empty()) {
+        std::cout << "   Нет свободных адвокатов\n";
+    } else {
+        for (const auto& lawyer : availableLawyers) {
+            std::cout << "   • " << lawyer->getFullName() 
+                      << " (специализация: " << lawyer->getSpecialization() 
+                      << ", ставка: " << lawyer->getHourlyRate() << " руб/час)\n";
+        }
+    }
     
     std::cout << "\n4. СОДЕРЖАНИЕ ДЕЛА №1:\n";
     std::cout << "   " << firm.getCaseContent(1) << "\n";
-
     
-    std::cout << "\n=== КОЛЛЕКЦИЯ PERSON ===\n";
-
+    std::cout << "\n5. СОДЕРЖАНИЕ ДЕЛА №4:\n";
+    std::cout << "   " << firm.getCaseContent(4) << "\n";
+    
+    std::cout << "\n6. ПОПЫТКА ПОЛУЧИТЬ НЕСУЩЕСТВУЮЩЕЕ ДЕЛО (№99):\n";
+    std::cout << "   " << firm.getCaseContent(99) << "\n";
+    
+    std::cout << "\n=== КОЛЛЕКЦИЯ PERSON (базовый класс) ===\n";
     
     std::vector<Person*> allPeople = firm.getAllPeople();
-
     
     for (const auto& person : allPeople) {
-        std::cout << person->getInfo() << "\n";
+        std::cout << "• " << person->getRole() << ": " << person->getFullName()
+                  << " | " << person->getInfo() << "\n";
     }
-
     
-    std::cout << "\n=== ВСЕ АДВОКАТЫ (фильтр по роли) ===\n";
-    auto allLawyersAsPerson = firm.getPeopleByRole("Адвокат");
-    for (const auto& person : allLawyersAsPerson) {
-        std::cout << person->getInfo() << "\n";
-    }
-
+    std::cout << "\n=== ДОПОЛНИТЕЛЬНАЯ ИНФОРМАЦИЯ ===\n";
     
-    std::cout << "\n=== ЛЮДИ В 'Гражданские дела' ===\n";
-    auto peopleInCivilCases = firm.getPeopleInvolvedInCaseType("Гражданские");
-    for (const auto& person : peopleInCivilCases) {
-        std::cout << person->getFullName() << " (" << person->getRole() << ")\n";
+    std::cout << "Общее количество дел в конторе: " << firm.getTotalCases() << "\n";
+    
+    std::cout << "\nАдвокаты и их дела:\n";
+    for (const auto& lawyer : firm.getLawyers()) {
+        std::cout << "• " << lawyer->getFullName() 
+                  << " (дел: " << lawyer->getCaseCount() 
+                  << ", доступен: " << (lawyer->getIsAvailable() ? "да" : "нет") << ")\n";
     }
-
+    
+    std::cout << "\nКлиенты и их дела:\n";
+    for (const auto& client : firm.getClients()) {
+        auto serviceTypes = client->getServiceTypes();
+        std::cout << "• " << client->getFullName() 
+                  << " (дел: " << client->getCaseCount() 
+                  << ", услуги: ";
+        for (size_t i = 0; i < serviceTypes.size(); ++i) {
+            std::cout << serviceTypes[i];
+            if (i < serviceTypes.size() - 1) std::cout << ", ";
+        }
+        std::cout << ")\n";
+    }
+    
+    std::cout << "\nПроверка целостности взаимосвязей: ";
+    if (firm.validateRelationships()) {
+        std::cout << "ОК (все связи корректны)\n";
+    } else {
+        std::cout << "ОШИБКА (нарушены связи между объектами)\n";
+    }
+    
     return 0;
 }

@@ -4,7 +4,7 @@
 #include "LegalService.h"
 
 Case::Case(int caseId, const std::string& caseContent,
-    Lawyer* caseLawyer, Client* caseClient, LegalService* caseService)
+    Lawyer* caseLawyer, Client* caseClient, LegalService* caseService) 
     : id(caseId), content(caseContent), lawyer(caseLawyer),
     client(caseClient), service(caseService) {} 
 

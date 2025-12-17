@@ -2,92 +2,53 @@
 #include "Case.h"
 #include <algorithm>
 #include <sstream>
-#include <iostream>
 
 Lawyer::Lawyer(const std::string& name, int age, const std::string& spec,
-               double rate, bool available)
-    : Person(name, age), specialization(spec), 
-      hourlyRate(rate), isAvailable(available) {}
+    double rate, bool available)
+    : Person(name, age), specialization(spec), isAvailable(available),
+    hourlyRate(rate) {}
 
-std::string Lawyer::getSpecialization() const { return specialization; }
-bool Lawyer::getAvailability() const { return isAvailable; }
-double Lawyer::getHourlyRate() const { return hourlyRate; }
-
-const std::vector<Case*>& Lawyer::getCases() const { return cases; }
-
-void Lawyer::setSpecialization(const std::string& spec) { specialization = spec; }
-void Lawyer::setAvailability(bool available) { isAvailable = available; }
-void Lawyer::setHourlyRate(double rate) { hourlyRate = rate; }
-
-void Lawyer::addCase(Case* newCase) {
-    if (newCase && std::find(cases.begin(), cases.end(), newCase) == cases.end()) {
-        cases.push_back(newCase);
-        newCase->setLawyer(this);
-        
-        if (isAvailable && !cases.empty()) {
-            isAvailable = false;
-        }
-        
-        std::cout << "Case " << newCase->getCaseId() 
-                  << " added to lawyer " << getName() << std::endl;
-    }
+void Lawyer::addCase(std::shared_ptr<Case> newCase) {
+    if (!newCase) return;
+    if (std::find(cases.begin(), cases.end(), newCase) != cases.end()) return;
+    cases.push_back(newCase);
+    isAvailable = false;
 }
 
-void Lawyer::removeCase(Case* caseToRemove) {
-    if (!caseToRemove) return;
-    
+void Lawyer::removeCase(std::shared_ptr<Case> caseToRemove) {
     auto it = std::find(cases.begin(), cases.end(), caseToRemove);
     if (it != cases.end()) {
         cases.erase(it);
-        caseToRemove->setLawyer(nullptr);
-        
-        std::cout << "Case " << caseToRemove->getCaseId() 
-                  << " removed from lawyer " << getName() << std::endl;
-    }
-    
-    if (cases.empty()) {
-        isAvailable = true;
+        isAvailable = cases.empty();
     }
 }
 
-bool Lawyer::hasCase(const std::string& caseId) const {
-    for (const auto& casePtr : cases) {
-        if (casePtr && casePtr->getCaseId() == caseId) {
-            return true;
-        }
-    }
-    return false;
+bool Lawyer::hasCase(int caseId) const {
+    return std::any_of(cases.begin(), cases.end(),
+        [caseId](const auto& c) { return c && c->getId() == caseId; });
 }
 
-int Lawyer::getCasesCount() const {
-    return cases.size();
-}
-
-double Lawyer::calculateEstimatedCost(double hours) const {
-    return hourlyRate * hours;
-}
-
-void Lawyer::toggleAvailability() {
-    isAvailable = !isAvailable;
-}
+int Lawyer::getCasesCount() const { return static_cast<int>(cases.size()); }
 
 std::string Lawyer::toString() const {
     std::stringstream ss;
-    ss << Person::toString() << "\n"
-       << "Specialization: " << specialization << "\n"
-       << "Hourly Rate: $" << hourlyRate << "\n"
-       << "Available: " << (isAvailable ? "Yes" : "No") << "\n"
-       << "Active Cases: " << getCasesCount();
-    
+    ss << getRole() << ": " << fullName << " (" << age << " лет)\n"
+        << "Специализация: " << specialization << "\n"
+        << "Ставка: " << hourlyRate << " руб/час\n"
+        << "Доступен: " << (isAvailable ? "да" : "нет") << "\n"
+        << "Дел: " << getCasesCount();
     if (!cases.empty()) {
-        ss << "\nCases:";
-        for (const auto& casePtr : cases) {
-            if (casePtr) {
-                ss << "\n  - " << casePtr->getCaseId() 
-                   << " (" << casePtr->getStatus() << ")";
-            }
+        ss << "\nДела: ";
+        for (size_t i = 0; i < cases.size(); ++i) {
+            if (i > 0) ss << ", ";
+            ss << "#" << cases[i]->getId();
         }
     }
-    
     return ss.str();
 }
+
+std::string Lawyer::getInfo() const {
+    return "Специализация: " + specialization + ", ставка: " + std::to_string(hourlyRate) + " руб/час";
+}
+
+std::string Lawyer::getRole() const { return "Адвокат"; }

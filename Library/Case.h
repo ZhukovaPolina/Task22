@@ -1,10 +1,10 @@
-#ifndef CASE_H
-#define CASE_H
-
+#pragma once
 #include <string>
-#include "Lawyer.h"
-#include "Client.h"
-#include "LegalService.h"
+#include <memory>
+
+class Lawyer;
+class Client;
+class LegalService;
 
 class Case {
 private:
@@ -15,18 +15,18 @@ private:
     LegalService* service;
     
 public:
-    Case(int caseId, const std::string& caseContent, Lawyer* caseLawyer, 
-         Client* caseClient, LegalService* caseService);
-    ~Case();
-    
+    Case(int caseId, const std::string& caseContent,
+        Lawyer* caseLawyer, Client* caseClient, LegalService* caseService);
+    ~Case() = default;
+
     Case(const Case&) = delete;
     Case& operator=(const Case&) = delete;
-    
-    int getId() const;
-    std::string getContent() const;
-    Lawyer* getLawyer() const;
-    Client* getClient() const;
-    LegalService* getService() const;
+
+    int getId() const { return id; }
+    std::string getContent() const { return content; }
+    Lawyer* getLawyer() const { return lawyer; }
+    Client* getClient() const { return client; }
+    LegalService* getService() const { return service; }
     std::string getServiceCategory() const;
     
     void setContent(const std::string& newContent);
@@ -34,5 +34,3 @@ public:
     void setClient(Client* newClient);
     void setService(LegalService* newService);
 };
-
-#endif

@@ -12,7 +12,7 @@ void Client::setContactInfo(const std::string& contact) { contactInfo = contact;
 
 void Client::addCase(std::shared_ptr<Case> newCase) {
     if (!newCase) return;
-    if (std::find(cases.begin(), cases.end(), newCase) != cases.end()) return;
+    if (std::find(cases.begin(), cases.end(), newCase) != cases.end()) return; 
     cases.push_back(newCase);
 }
 

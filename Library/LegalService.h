@@ -13,7 +13,7 @@ private:
     double price;
     std::string category;
     std::vector<std::shared_ptr<Case>> cases;
-
+     
 public: 
     LegalService(const std::string& serviceName, double servicePrice,
         const std::string& serviceCategory);

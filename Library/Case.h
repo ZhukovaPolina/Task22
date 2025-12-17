@@ -7,7 +7,7 @@ class Client;
 class LegalService;
 
 class Case {
-private:
+private: 
     int id;
     std::string content;
     Lawyer* lawyer;

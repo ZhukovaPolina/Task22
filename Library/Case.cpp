@@ -10,7 +10,7 @@ Case::Case(int caseId, const std::string& caseContent,
 
 std::string Case::getServiceCategory() const {
     return service ? service->getCategory() : "Неизвестно"; 
-}
+} 
 
 void Case::setContent(const std::string& newContent) { content = newContent; }
 void Case::setLawyer(Lawyer* newLawyer) { lawyer = newLawyer; }

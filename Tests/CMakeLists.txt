@@ -11,7 +11,7 @@ else()
     add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# Пути 
+# Пути  
 set(TASK22_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/Task22)
 set(LIBRARY_DIR  ${CMAKE_CURRENT_SOURCE_DIR}/Library)
 set(TEST_DIR     ${CMAKE_CURRENT_SOURCE_DIR}/Tests)

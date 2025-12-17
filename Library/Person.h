@@ -13,6 +13,6 @@ public:
     const std::string& getFullName() const { return fullName; }
     int getAge() const { return age; } 
 
-    virtual std::string getInfo() const = 0;
+    virtual std::string getInfo() const = 0; 
     virtual std::string getRole() const = 0;
 };

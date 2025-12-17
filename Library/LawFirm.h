@@ -15,7 +15,7 @@ private:
     std::vector<std::unique_ptr<Lawyer>> lawyers;
     std::vector<std::unique_ptr<Client>> clients; 
     std::vector<std::shared_ptr<Case>> cases;
-
+     
 public:
     LawFirm() = default;
     ~LawFirm() = default;

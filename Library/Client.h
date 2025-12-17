@@ -10,7 +10,7 @@ class Client : public Person {
 private: 
     std::string contactInfo;
     std::vector<std::shared_ptr<Case>> cases;
-
+     
 public:
     Client(const std::string& name, int age, const std::string& contact);
 

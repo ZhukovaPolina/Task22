@@ -13,7 +13,7 @@ enum ReportType {
     SERVICES = 1,
     CIVIL_CLIENTS = 2,
     CRIMINAL_LAWYERS = 3,
-    CASE_1 = 4,
+    CASE_1 = 4, 
     CASE_4 = 5,
     CASE_99 = 6,
     PERSONS = 7,

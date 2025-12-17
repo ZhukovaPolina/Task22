@@ -17,7 +17,7 @@ public:
     Lawyer(const std::string& name, int age, const std::string& spec,
         double rate, bool available = true);
 
-    std::string getSpecialization() const { return specialization; }
+    std::string getSpecialization() const { return specialization; } 
     bool getIsAvailable() const { return isAvailable; }
     double getHourlyRate() const { return hourlyRate; }
     const std::vector<std::shared_ptr<Case>>& getCases() const { return cases; }

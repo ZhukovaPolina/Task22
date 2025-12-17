@@ -11,7 +11,7 @@ void LawFirm::addService(std::unique_ptr<LegalService> service) {
 
 void LawFirm::addLawyer(std::unique_ptr<Lawyer> lawyer) { 
     lawyers.push_back(std::move(lawyer));
-}
+} 
 
 void LawFirm::addClient(std::unique_ptr<Client> client) {
     clients.push_back(std::move(client));

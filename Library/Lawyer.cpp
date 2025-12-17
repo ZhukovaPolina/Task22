@@ -13,7 +13,7 @@ void Lawyer::addCase(std::shared_ptr<Case> newCase) {
     if (std::find(cases.begin(), cases.end(), newCase) != cases.end()) return; 
     cases.push_back(newCase);
     isAvailable = false;
-}
+} 
 
 void Lawyer::removeCase(std::shared_ptr<Case> caseToRemove) {
     auto it = std::find(cases.begin(), cases.end(), caseToRemove);

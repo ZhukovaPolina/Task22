@@ -6,7 +6,7 @@
 Case::Case(int caseId, const std::string& caseContent,
     Lawyer* caseLawyer, Client* caseClient, LegalService* caseService)
     : id(caseId), content(caseContent), lawyer(caseLawyer),
-    client(caseClient), service(caseService) {}
+    client(caseClient), service(caseService) {} 
 
 std::string Case::getServiceCategory() const {
     return service ? service->getCategory() : "Неизвестно"; 

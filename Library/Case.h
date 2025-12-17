@@ -16,7 +16,7 @@ private:
     
 public:
     Case(int caseId, const std::string& caseContent,
-        Lawyer* caseLawyer, Client* caseClient, LegalService* caseService);
+        Lawyer* caseLawyer, Client* caseClient, LegalService* caseService); 
     ~Case() = default;
 
     Case(const Case&) = delete;

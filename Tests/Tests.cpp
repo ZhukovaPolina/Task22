@@ -219,4 +219,4 @@ TEST(LawFirmTest, ValidateRelationshipsPassesForConsistentState) {
     EXPECT_EQ(people[2]->getRole(), "Клиент");
     EXPECT_EQ(people[3]->getRole(), "Клиент");
     EXPECT_EQ(people[4]->getRole(), "Клиент");
-}
+} 

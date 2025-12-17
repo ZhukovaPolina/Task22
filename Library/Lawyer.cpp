@@ -10,7 +10,7 @@ Lawyer::Lawyer(const std::string& name, int age, const std::string& spec,
 
 void Lawyer::addCase(std::shared_ptr<Case> newCase) {
     if (!newCase) return;
-    if (std::find(cases.begin(), cases.end(), newCase) != cases.end()) return;
+    if (std::find(cases.begin(), cases.end(), newCase) != cases.end()) return; 
     cases.push_back(newCase);
     isAvailable = false;
 }

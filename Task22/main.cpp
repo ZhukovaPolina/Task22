@@ -8,7 +8,7 @@
 #include "../Library/Client.h"
 #include "../Library/Case.h"
 
-
+ 
 enum ReportType {
     SERVICES = 1,
     CIVIL_CLIENTS = 2,

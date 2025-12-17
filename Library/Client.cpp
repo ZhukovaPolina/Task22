@@ -8,7 +8,7 @@ Client::Client(const std::string& name, int age, const std::string& contact)
 
 std::string Client::getContactInfo() const { return contactInfo; }
 const std::vector<std::shared_ptr<Case>>& Client::getCases() const { return cases; }
-void Client::setContactInfo(const std::string& contact) { contactInfo = contact; }
+void Client::setContactInfo(const std::string& contact) { contactInfo = contact; } 
 
 void Client::addCase(std::shared_ptr<Case> newCase) {
     if (!newCase) return;

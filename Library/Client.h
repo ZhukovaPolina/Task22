@@ -7,7 +7,7 @@
 class Case;
 
 class Client : public Person {
-private:
+private: 
     std::string contactInfo;
     std::vector<std::shared_ptr<Case>> cases;
 

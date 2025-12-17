@@ -13,7 +13,7 @@ class LawFirm {
 private:
     std::vector<std::unique_ptr<LegalService>> services;
     std::vector<std::unique_ptr<Lawyer>> lawyers;
-    std::vector<std::unique_ptr<Client>> clients;
+    std::vector<std::unique_ptr<Client>> clients; 
     std::vector<std::shared_ptr<Case>> cases;
 
 public:

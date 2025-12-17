@@ -9,7 +9,7 @@ void LawFirm::addService(std::unique_ptr<LegalService> service) {
     services.push_back(std::move(service));
 }
 
-void LawFirm::addLawyer(std::unique_ptr<Lawyer> lawyer) {
+void LawFirm::addLawyer(std::unique_ptr<Lawyer> lawyer) { 
     lawyers.push_back(std::move(lawyer));
 }
 

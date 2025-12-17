@@ -13,7 +13,7 @@ void LegalService::addCase(std::shared_ptr<Case> casePtr) {
 }
 
 void LegalService::removeCase(std::shared_ptr<Case> casePtr) {
-    auto it = std::find(cases.begin(), cases.end(), casePtr);
+    auto it = std::find(cases.begin(), cases.end(), casePtr); 
     if (it != cases.end()) {
         cases.erase(it);
     }

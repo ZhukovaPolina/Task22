@@ -1,4 +1,4 @@
-#include "Case.h"
+Ôªø#include "Case.h"
 #include "Lawyer.h"
 #include "Client.h"
 #include "LegalService.h"
@@ -9,7 +9,7 @@ Case::Case(int caseId, const std::string& caseContent,
     client(caseClient), service(caseService) {} 
 
 std::string Case::getServiceCategory() const {
-    return service ? service->getCategory() : "ÕÂËÁ‚ÂÒÚÌÓ"; 
+    return service ? service->getCategory() : "–ù–µ–∏–∑–≤–µ—Å—Ç–Ω–æ"; 
 } 
 
 void Case::setContent(const std::string& newContent) { content = newContent; }

@@ -1,4 +1,4 @@
-#include "Client.h"
+п»ї#include "Client.h"
 #include "Case.h"
 #include <algorithm>
 #include <sstream>
@@ -44,11 +44,11 @@ std::vector<std::string> Client::getServiceTypes() const {
 
 std::string Client::toString() const {
     std::stringstream ss;
-    ss << getRole() << ": " << fullName << " (" << age << " лет)\n"
-        << "Контакт: " << contactInfo << "\n"
-        << "Дел: " << getCasesCount();
+    ss << getRole() << ": " << fullName << " (" << age << " Р»РµС‚)\n"
+        << "РљРѕРЅС‚Р°РєС‚: " << contactInfo << "\n"
+        << "Р”РµР»: " << getCasesCount();
     if (!cases.empty()) {
-        ss << "\nДела: ";
+        ss << "\nР”РµР»Р°: ";
         for (size_t i = 0; i < cases.size(); ++i) {
             if (i > 0) ss << ", ";
             ss << "#" << cases[i]->getId();
@@ -58,7 +58,7 @@ std::string Client::toString() const {
 }
 
 std::string Client::getInfo() const {
-    return "Контакт: " + contactInfo;
+    return "РљРѕРЅС‚Р°РєС‚: " + contactInfo;
 }
 
-std::string Client::getRole() const { return "Клиент"; }
+std::string Client::getRole() const { return "РљР»РёРµРЅС‚"; }

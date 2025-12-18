@@ -7,7 +7,7 @@
 #include "../Library/LegalService.h"
 #include "../Library/Case.h"
 
-TEST(LawFirmTest, AddAndGetEntities) {
+TEST(LawFirmTest, AddAndGetEntities) { 
     LawFirm firm;
 
     firm.addService(std::make_unique<LegalService>("Консультация", 5000.0, "Гражданские"));
